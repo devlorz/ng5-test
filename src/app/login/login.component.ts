@@ -1,20 +1,24 @@
 import { AuthService } from './../auth.service';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-login',
   template: `
     <a>
-      <span *ngIf="needsLogin()" >Login</span>
-      <span *ngIf="!needsLogin()" >Logout</span>
+      <span *ngIf="needsLogin" >Login</span>
+      <span *ngIf="!needsLogin" >Logout</span>
     </a>
   `,
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
+  public needsLogin = true;
+
   constructor(private authService: AuthService) {}
 
-  needsLogin() {
-    return !this.authService.isAuthenticated();
+  ngOnInit() {
+    this.authService.isAuthenticated().then((authenticated: boolean) => {
+      this.needsLogin = !authenticated;
+    });
   }
 }
