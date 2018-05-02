@@ -3,7 +3,12 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html',
+  template: `
+    <a>
+      <span *ngIf="needsLogin()" >Login</span>
+      <span *ngIf="!needsLogin()" >Logout</span>
+    </a>
+  `,
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
