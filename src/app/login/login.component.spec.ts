@@ -10,6 +10,7 @@ import {
 } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -22,12 +23,14 @@ describe('LoginComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule, FormsModule],
       declarations: [LoginComponent],
       providers: [AuthService]
     });
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
+    component.ngOnInit();
     service = TestBed.get(AuthService);
     el = fixture.debugElement.query(By.css('a'));
     submitEl = fixture.debugElement.query(By.css('button'));
@@ -87,14 +90,33 @@ describe('LoginComponent', () => {
     const EMAIL = 'test@mail.com';
     const PASSWORD = 'thisispassword';
     let user: User;
-    loginEl.nativeElement.value = EMAIL;
-    passwordEl.nativeElement.value = PASSWORD;
+    // loginEl.nativeElement.value = EMAIL;
+    // passwordEl.nativeElement.value = PASSWORD;
+    component.form.controls['email'].setValue(EMAIL);
+    component.form.controls['password'].setValue(PASSWORD);
+    expect(component.form.valid).toBeTruthy();
 
     component.loggedIn.subscribe(value => (user = value));
 
-    submitEl.triggerEventHandler('click', null);
+    // submitEl.triggerEventHandler('click', null);
+    component.login();
 
     expect(user.email).toBe(EMAIL);
     expect(user.password).toBe(PASSWORD);
+  });
+
+  it('should invalid when form is empty', () => {
+    expect(component.form.valid).toBeFalsy();
+  });
+
+  it('email field validity', () => {
+    let errors = {};
+    const email = component.form.controls['email'];
+    errors = email.errors || {};
+    expect(errors['required']).toBeTruthy();
+
+    email.setValue('test');
+    errors = email.errors || {};
+    expect(errors['pattern']).toBeTruthy();
   });
 });
