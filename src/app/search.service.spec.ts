@@ -70,7 +70,7 @@ describe('SearchService', () => {
       expect(artist).toBe('U2');
       expect(name).toBe('Beautiful Day');
       expect(thumbnail).toBe('image.jpg');
-      expect(artistId).toBe(78500);
+      expect(artistId.toString()).toBe('78500');
     })
   );
 });
